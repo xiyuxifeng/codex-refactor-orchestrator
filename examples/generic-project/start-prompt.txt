@@ -1,0 +1,9 @@
+Use the refactor-orchestrator skill.
+
+Plan and execute Stage 1 from docs/Refactor-TaskList.md.
+Inspect the repository first.
+Use Explorer mini only for independent read-only investigations.
+Freeze contracts before delegation.
+Use Executor mini for bounded implementation and tests.
+Execute by dependency batch.
+Review the actual diff and do not accept the stage without evidence.

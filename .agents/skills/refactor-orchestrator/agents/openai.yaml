@@ -1,0 +1,7 @@
+interface:
+  display_name: "Refactor Orchestrator"
+  short_description: "Plan and coordinate staged repository refactors"
+  default_prompt: "Use the refactor-orchestrator skill to plan and execute the selected refactor stage."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,177 @@
+{
+  "package": "codex-refactor-orchestrator-github-generic",
+  "version": "5.0.0-generic",
+  "file_count_including_manifest": 34,
+  "files": [
+    {
+      "path": ".agents/skills/refactor-orchestrator/SKILL.md",
+      "size_bytes": 12933,
+      "sha256": "516b5372243bdb6331fbbae5f6cdaf6665ecc57da926c4a8ddedc72d2f362efe"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/agents/openai.yaml",
+      "size_bytes": 271,
+      "sha256": "32626176469d66dd8f819eb461b8c436a03ba94dddde744c0cfebb0d32b1e21e"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/references/model-policy.md",
+      "size_bytes": 774,
+      "sha256": "91c427e1ac4085c03d16aad8b00aeadbadb66b8f9eb0504ccb9edcccf4f880f4"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/references/orchestration-policy.yaml",
+      "size_bytes": 699,
+      "sha256": "e9771b7bf536453b2e9c6fdcdf7a25664fe3d25c31e1214890b54109267d5eaa"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/references/sync-protocol.md",
+      "size_bytes": 708,
+      "sha256": "39e0c312c8409641bd15ca3302420d11166bb7bbdd83d5eb0f47bf90c8a167e5"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/scripts/capture-round-artifacts.sh",
+      "size_bytes": 542,
+      "sha256": "4cbbbbebbfca0ea10e8055aeedcde81bfd995818b80fc95a916cff3ab2ef87b5"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/scripts/init-refactor-state.sh",
+      "size_bytes": 500,
+      "sha256": "c3bfeaf9e8d9cc529ccfe53661377a81d303ae79c5c65156492f53b0929c50fb"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/scripts/runtime-probe.sh",
+      "size_bytes": 1209,
+      "sha256": "d637aad7ac06536960169e765f83840babd50a7ab9d7bb6d5e4a0d10489fb069"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/scripts/validate-install.sh",
+      "size_bytes": 3243,
+      "sha256": "1afb404a28545dde790ca2d6e4efe6aab5f18f9e1ee6d0523476ea5d1f6d80c5"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/explorer-brief.md",
+      "size_bytes": 331,
+      "sha256": "7413998bf507739c6ffd62ff00092936caf215784c9678eb5920208c4b32149d"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/fix-loop.md",
+      "size_bytes": 374,
+      "sha256": "d17da9bf166a8e38fa82b489e97ee18b29e78c62e90ddcab5f345722677540d8"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/handoff.md",
+      "size_bytes": 305,
+      "sha256": "8fb2e4d8eaedfb53535474054f6d9449567328172681918e6ed9d00398a686b1"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/manifest.yaml",
+      "size_bytes": 321,
+      "sha256": "6ee4375ef8df1ed5522115d4438385ab56dd739d92cfb0637f1798596371911c"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/round-result.md",
+      "size_bytes": 413,
+      "sha256": "45543110ae649ce3861f8a65d7afc63a820f5cd484d120016cc4565263306068"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/runtime-probe-report.md",
+      "size_bytes": 476,
+      "sha256": "44887bfb6e1fb05db5f07f495c24082a8479d45431af811506d9f84b48f33b29"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/stage-plan.md",
+      "size_bytes": 686,
+      "sha256": "87b491c89f70836b581f2e256465d4777ba6faff232410b22e9fbe343da79e94"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/stage-review.md",
+      "size_bytes": 492,
+      "sha256": "046aa494d244cc4cb8b7af2c646576d9a0b9784f1d422e5e660743ce3cd6a8e2"
+    },
+    {
+      "path": ".agents/skills/refactor-orchestrator/templates/task-card.md",
+      "size_bytes": 620,
+      "sha256": "53ecf2be8d781a17b0769342673c900e7edab95d5fbd4da9698e8ea1d71475c3"
+    },
+    {
+      "path": ".codex/agents/refactor-executor-mini.toml",
+      "size_bytes": 2193,
+      "sha256": "df9626493669cc76d05c1eb9f72d98ff7d8a994eb0c914e83e6b35a70ac19f96"
+    },
+    {
+      "path": ".codex/agents/refactor-explorer-mini.toml",
+      "size_bytes": 1636,
+      "sha256": "c194be8b6362e40762ad4da0481d9605e913edadd82d363e08ad1b3335ffd3fa"
+    },
+    {
+      "path": ".codex/config.toml",
+      "size_bytes": 240,
+      "sha256": "811b66b4f9ddce7eb60804294dfd8fca58ffb6eef2f8a2f06e36c49594a78fac"
+    },
+    {
+      "path": ".codex/config.toml.example",
+      "size_bytes": 378,
+      "sha256": "dcbdc9856113b3fce1fa4c3aa9e6c3abe623373745baea6621ce47082a1f6270"
+    },
+    {
+      "path": ".gitignore",
+      "size_bytes": 39,
+      "sha256": "702bd1ab27c8e844b64f5efd66870ebecf181eec12d0aceaf7caf3dd722b75b4"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size_bytes": 349,
+      "sha256": "c899efb59edfc47774c416c192213e0380bc5c568e2192691cfc7df7ec350b1d"
+    },
+    {
+      "path": "INSTALL.md",
+      "size_bytes": 643,
+      "sha256": "213c1fdda940e15a05ff239533d83d394d897ebaf7c3ded065cda3d271338cd5"
+    },
+    {
+      "path": "LICENSE",
+      "size_bytes": 659,
+      "sha256": "159325fcac59dc8f008ed82e939c78837361217a86f8be3d0485291cfe46a57d"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 1116,
+      "sha256": "0b6c6eb364019a79e2554eb0cfc730e133389d99f08ca29979c6bf69aa699330"
+    },
+    {
+      "path": "README_EN.md",
+      "size_bytes": 1028,
+      "sha256": "be3b9d820f8e159d98391792b8bb8c57b193dcde27c6fd485e2412dc268a98ae"
+    },
+    {
+      "path": "REVIEW-REPORT.md",
+      "size_bytes": 350,
+      "sha256": "89a75d302c97d070cd71e87ff8ee89adf179a3ff7f465575d3675fb03abe46b2"
+    },
+    {
+      "path": "docs/01-通用项目使用说明.md",
+      "size_bytes": 7345,
+      "sha256": "cfde131156e2d61d90ef5b72fa4b9d91d513851d69b35b9bcfc88b299cfd5bdd"
+    },
+    {
+      "path": "docs/README_EN.md",
+      "size_bytes": 1318,
+      "sha256": "a3fe9d4fd33c2102dfdf70b9e9a3eb76f2c6c1b83bf111ca781ca6213d7b540f"
+    },
+    {
+      "path": "examples/generic-project/start-prompt.txt",
+      "size_bytes": 380,
+      "sha256": "23b4b4fe4f479a25e09b518f3c7203bd73438c4316d44b6a3fc3b69ac24eaf9f"
+    },
+    {
+      "path": "install.sh",
+      "size_bytes": 886,
+      "sha256": "0d9285f1a0252124cfd0b2c253c27755e97ccfca3bc0fe192c0abed65211586b"
+    },
+    {
+      "path": "PACKAGE-MANIFEST.json",
+      "size_bytes": 6265,
+      "sha256": null
+    }
+  ]
+}
