@@ -53,18 +53,21 @@ check_contains ".agents/skills/refactor-orchestrator/agents/openai.yaml" 'allow_
 if [[ -f ".codex/config.toml" ]]; then
   check_contains ".codex/config.toml" '[agents]' ".codex/config.toml does not contain [agents]"
 else
-  echo "WARNING: .codex/config.toml not found. Merge .codex/config.toml.example before use."
+  echo "WARNING: .codex/config.toml not found. Run the installer or add the required [agents] settings."
 fi
 
-if [[ -d ".agents/skills/refactor-orchestrator" ]]; then
-  echo "CONFLICT: obsolete path .agents/skills/refactor-orchestrator still exists"
+# The old, unsupported repository Skill path was .codex/skills/.
+# The current supported path is .agents/skills/.
+if [[ -d ".codex/skills/refactor-orchestrator" ]]; then
+  echo "CONFLICT: obsolete path .codex/skills/refactor-orchestrator still exists"
+  echo "Remove it after confirming the Skill is installed at .agents/skills/refactor-orchestrator."
   failed=1
 fi
 
 if [[ -d ".agents/skills/refactor-orchestrator" ]]; then
   count="$(find .agents/skills/refactor-orchestrator -maxdepth 1 -name SKILL.md | wc -l | tr -d ' ')"
   if [[ "$count" != "1" ]]; then
-    echo "INVALID: expected exactly one SKILL.md"
+    echo "INVALID: expected exactly one SKILL.md in .agents/skills/refactor-orchestrator"
     failed=1
   fi
 fi
@@ -75,6 +78,7 @@ import pathlib, tomllib
 for p in [
     pathlib.Path(".codex/agents/refactor-explorer-mini.toml"),
     pathlib.Path(".codex/agents/refactor-executor-mini.toml"),
+    pathlib.Path(".codex/config.toml"),
 ]:
     if p.exists():
         with p.open("rb") as f:
