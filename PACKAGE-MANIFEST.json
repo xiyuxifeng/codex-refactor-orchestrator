@@ -1,17 +1,17 @@
 {
-  "package": "codex-refactor-orchestrator-github-generic",
-  "version": "5.0.0-generic",
+  "package": "codex-refactor-orchestrator-v5-generic-updated",
+  "version": "5.1.0",
   "file_count_including_manifest": 34,
   "files": [
     {
       "path": ".agents/skills/refactor-orchestrator/SKILL.md",
-      "size_bytes": 12933,
-      "sha256": "516b5372243bdb6331fbbae5f6cdaf6665ecc57da926c4a8ddedc72d2f362efe"
+      "size_bytes": 13479,
+      "sha256": "8d30669883021fbe5bf02a9a0a0d42c0f1128202f0e3e446a58be4c429779095"
     },
     {
       "path": ".agents/skills/refactor-orchestrator/agents/openai.yaml",
-      "size_bytes": 271,
-      "sha256": "32626176469d66dd8f819eb461b8c436a03ba94dddde744c0cfebb0d32b1e21e"
+      "size_bytes": 390,
+      "sha256": "41dd38e7ec6a2ff54dcc612e4fb912c00cf97f01fd735879608425278f4eaf8b"
     },
     {
       "path": ".agents/skills/refactor-orchestrator/references/model-policy.md",
@@ -135,8 +135,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 1116,
-      "sha256": "0b6c6eb364019a79e2554eb0cfc730e133389d99f08ca29979c6bf69aa699330"
+      "size_bytes": 1178,
+      "sha256": "7705122c675e27fa91611464cf8e0ce21015ebb9e18f77aafe5f6943d0a87567"
     },
     {
       "path": "README_EN.md",
@@ -145,23 +145,23 @@
     },
     {
       "path": "REVIEW-REPORT.md",
-      "size_bytes": 350,
-      "sha256": "89a75d302c97d070cd71e87ff8ee89adf179a3ff7f465575d3675fb03abe46b2"
+      "size_bytes": 470,
+      "sha256": "17bdc5aca944f52db2ddda6b7f3ce919842bfc1904d2ac4e3bac514c2baf2492"
     },
     {
       "path": "docs/01-通用项目使用说明.md",
-      "size_bytes": 7345,
-      "sha256": "cfde131156e2d61d90ef5b72fa4b9d91d513851d69b35b9bcfc88b299cfd5bdd"
+      "size_bytes": 8306,
+      "sha256": "299282c953bc7644fb969b4fa6a96549648bfcb4c41297bb063e9c656139ff49"
     },
     {
       "path": "docs/README_EN.md",
-      "size_bytes": 1318,
-      "sha256": "a3fe9d4fd33c2102dfdf70b9e9a3eb76f2c6c1b83bf111ca781ca6213d7b540f"
+      "size_bytes": 1893,
+      "sha256": "53b3467e1c92d2f347e33b1f4bafa04abda91bd82b9f8fc741d2bc158d557e32"
     },
     {
       "path": "examples/generic-project/start-prompt.txt",
-      "size_bytes": 380,
-      "sha256": "23b4b4fe4f479a25e09b518f3c7203bd73438c4316d44b6a3fc3b69ac24eaf9f"
+      "size_bytes": 526,
+      "sha256": "c57e4459232b647caeff34d030c81321d5a85f4af85c8b41b5f0ae8d0d85c043"
     },
     {
       "path": "install.sh",
@@ -170,7 +170,7 @@
     },
     {
       "path": "PACKAGE-MANIFEST.json",
-      "size_bytes": 6265,
+      "size_bytes": 6261,
       "sha256": null
     }
   ]

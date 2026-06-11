@@ -1,14 +1,23 @@
-# Review Report — v4
+# Review Report — 5.1.0
 
-## Fixes
+## Change
 
-- Added usable `.codex/config.toml`.
-- Retained canonical `.agents` and `.codex` paths.
-- Added visible mirrors for Finder users.
-- Added `install.sh`.
-- Added Finder hidden-file instructions.
-- Revalidated TOML, shell syntax, Skill frontmatter, required paths,
-  ZIP CRC, and manifest consistency.
+Added explicit delegation guidance:
+
+```text
+Choose and explicitly spawn subagents according to the Skill rules.
+Do not rely on implicit delegation.
+Use the minimum viable number of agents.
+```
+
+## Updated
+
+- Skill core delegation rules
+- Custom Skill default prompt
+- Generic Chinese guide
+- Generic English guide
+- All included example prompts
+- generic GitHub package only; no trade-strategy-ai-specific content
 
 ## Result
 

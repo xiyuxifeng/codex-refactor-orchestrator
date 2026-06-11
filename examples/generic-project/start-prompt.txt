@@ -1,5 +1,9 @@
 Use the refactor-orchestrator skill.
 
+Choose and explicitly spawn subagents according to the Skill rules.
+Do not rely on implicit delegation.
+Use the minimum viable number of agents.
+
 Plan and execute Stage 1 from docs/Refactor-TaskList.md.
 Inspect the repository first.
 Use Explorer mini only for independent read-only investigations.

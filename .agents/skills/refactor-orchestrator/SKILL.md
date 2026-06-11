@@ -66,6 +66,22 @@ Before spawning subagents:
 If the files are missing, report the missing bootstrap configuration and create
 them only when the current task authorizes repository file changes.
 
+## Explicit delegation rule
+
+The parent agent must:
+
+```text
+Choose and explicitly spawn the configured custom subagents according
+to this Skill's delegation rules.
+Do not rely on implicit delegation.
+Use the minimum viable number of agents.
+```
+
+This does not require spawning subagents for every task. When the minimum
+viable number is zero, the parent should complete the local task directly.
+When delegation is appropriate, the parent must explicitly spawn the named
+custom agent rather than merely suggesting that a subagent could be used.
+
 ## Parent-agent responsibilities
 
 The GPT-5.5 parent agent owns:

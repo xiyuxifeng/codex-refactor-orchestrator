@@ -31,6 +31,10 @@ generate task cards, and run separate manual GPT-5.4 mini sessions.
 ```text
 Use the refactor-orchestrator skill.
 
+Choose and explicitly spawn subagents according to the Skill rules.
+Do not rely on implicit delegation.
+Use the minimum viable number of agents.
+
 Plan and execute Stage 2 from docs/Refactor-TaskList.md.
 Run the runtime probe first.
 Use the minimum viable number of lanes.
@@ -39,3 +43,18 @@ Preserve per-round artifacts.
 Stop after the configured fix-round limit.
 Review the actual diff before stage acceptance.
 ```
+
+
+## Explicit subagent delegation
+
+Include these lines in stage prompts:
+
+```text
+Choose and explicitly spawn subagents according to the Skill rules.
+Do not rely on implicit delegation.
+Use the minimum viable number of agents.
+```
+
+The minimum viable number may be zero for a small local task. When delegation
+is appropriate, the parent must actually spawn the configured custom agent
+rather than only recommending subagent use.

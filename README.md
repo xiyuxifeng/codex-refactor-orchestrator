@@ -13,6 +13,7 @@ GPT-5.5 parent
 
 ## 特性 / Features
 
+- 显式 Custom Agent 创建 / explicit custom-agent spawning
 - 最小 Agent lane 策略 / minimum viable lanes
 - 最多三轮修复 / bounded three-round fix loop
 - 运行时探测 / runtime probe
