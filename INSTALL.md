@@ -3,14 +3,27 @@
 ## 推荐：安装脚本
 
 ```bash
-./install.sh /path/to/your/repository
+bash install.sh /path/to/your/repository
+```
+
+使用 `bash install.sh` 不依赖 `install.sh` 的可执行权限，避免出现：
+
+```text
+zsh: permission denied: ./install.sh
 ```
 
 脚本会安装：
 
 - `.agents/skills/refactor-orchestrator`
 - `.codex/agents`
-- `.codex/config.toml`（仅当目标仓库不存在该文件时）
+- `.codex/config.toml`
+
+如果目标仓库已有 `.codex/config.toml`，脚本会：
+
+1. 创建时间戳备份；
+2. 保留已有字段和值；
+3. 只补充缺失的 `[agents]` 配置；
+4. 在终端显示新增和保留的字段。
 
 ## 手动安装
 
@@ -33,6 +46,7 @@ INSTALL_TO_REPOSITORY_ROOT/
 
 ```bash
 bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 ## 启动
