@@ -25,8 +25,10 @@ GPT-5.5 parent
 Copy `.agents/` and `.codex/` to the repository root, or run:
 
 ```bash
-./install.sh /path/to/repository
+bash install.sh /path/to/repository
 ```
+
+When the target repository already has `.codex/config.toml`, the installer creates a backup, preserves existing values, and adds only missing `[agents]` settings.
 
 Validate:
 
