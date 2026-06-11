@@ -66,7 +66,35 @@ cd codex-refactor-orchestrator
 .codex/agents/refactor-executor-mini.toml
 ```
 
-已有 `.codex/config.toml` 时，安装脚本不会直接覆盖它。
+### 已有 `.codex/config.toml` 时会怎样？
+
+安装脚本会自动进行**非破坏性合并**：
+
+1. 创建时间戳备份，例如 `.codex/config.toml.backup-20260611-153000`；
+2. 保留用户已有的配置和值；
+3. 只补充缺失的 `[agents]` 和缺失字段；
+4. 输出哪些字段被新增、哪些已有值被保留。
+
+通常不需要用户手动编辑。只有安装提示缺少 `python3`、配置文件语法异常，或你希望修改默认值时才需要手动处理。
+
+需要的配置为：
+
+```toml
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+```
+
+配置含义：
+
+| 配置 | 含义 | 默认值说明 |
+|---|---|---|
+| `max_threads` | 同一父 Session 最多可同时运行的 Agent 线程数量，包含并发 subagents | `4` 用于限制并发、文件冲突和 Token 消耗；不是要求每次都启动 4 个 Agent |
+| `max_depth` | Agent 委派的最大嵌套深度 | `1` 表示只有 GPT-5.5 主 Agent 可以创建直接 subagent，mini subagent 不能继续创建孙 Agent |
+| `job_max_runtime_seconds` | 批量 Agent worker 的默认最长运行秒数 | `1800` 等于 30 分钟，主要用于 `spawn_agents_on_csv` 一类批量 worker，不是所有普通 subagent 的统一强制超时 |
+
+安装脚本不会覆盖已有字段。例如已有 `max_threads = 2` 时会保留 `2`，只补充其他缺失项。
 
 ## 2. 验证安装
 
@@ -200,7 +228,7 @@ Do not rely on implicit delegation.
 
 ## 已有 `.codex/config.toml` 怎么办？
 
-保留现有配置，只合并本项目需要的 `[agents]` 设置，不要直接覆盖整个文件。
+直接运行安装脚本。脚本会先备份，再保留已有值并补充缺失的 `[agents]` 配置。安装输出会明确显示新增和保留的字段。
 
 ## 一个项目应该使用多少个 Agent？
 
