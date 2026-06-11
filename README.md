@@ -53,8 +53,10 @@ GPT-5.5 parent
 git clone git@github.com:xiyuxifeng/codex-refactor-orchestrator.git
 cd codex-refactor-orchestrator
 
-./install.sh /path/to/your-project
+bash install.sh /path/to/your-project
 ```
+
+推荐使用 `bash install.sh`，这样不依赖 `install.sh` 的可执行权限，可避免 `zsh: permission denied: ./install.sh`。
 
 `/path/to/your-project` 必须是准备重构的目标仓库根目录。
 
