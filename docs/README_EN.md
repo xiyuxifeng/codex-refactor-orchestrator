@@ -20,7 +20,13 @@ GPT-5.5 parent
 ## 2. Install
 
 ```bash
-./install.sh /path/to/your-project
+bash install.sh /path/to/your-project
+```
+
+Using `bash install.sh` does not depend on the executable bit of `install.sh` and avoids errors such as:
+
+```text
+zsh: permission denied: ./install.sh
 ```
 
 The target repository receives:
