@@ -19,8 +19,6 @@ GPT-5.5 parent
 
 ## 2. Install
 
-From this repository:
-
 ```bash
 ./install.sh /path/to/your-project
 ```
@@ -31,11 +29,65 @@ The target repository receives:
 .agents/skills/refactor-orchestrator/
 .codex/agents/refactor-explorer-mini.toml
 .codex/agents/refactor-executor-mini.toml
+.codex/config.toml
 ```
 
-An existing `.codex/config.toml` is preserved.
+### When `.codex/config.toml` already exists
 
-## 3. Validate
+The installer performs a non-destructive merge:
+
+1. creates a timestamped backup;
+2. preserves existing settings and values;
+3. adds only a missing `[agents]` section or missing keys;
+4. prints which settings were added and which values were preserved.
+
+Example backup:
+
+```text
+.codex/config.toml.backup-20260611-153000
+```
+
+Manual editing is normally unnecessary. It is required only when Python 3 is
+unavailable, the existing TOML is malformed, the merge fails, or you want to
+change the defaults.
+
+## 3. Agent configuration
+
+```toml
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+```
+
+### `max_threads = 4`
+
+Maximum number of agent threads that may run concurrently under one parent
+session, including subagents.
+
+- This is an upper bound, not a request to always run four agents.
+- The Skill still uses the minimum viable number of agents.
+- Higher values increase parallel capacity but may also increase conflicts and
+  token use.
+- Existing user values are preserved by the installer.
+
+### `max_depth = 1`
+
+Maximum delegation nesting depth.
+
+- `1` allows the GPT-5.5 parent to create direct subagents.
+- Mini subagents cannot create child agents of their own.
+- This avoids recursive delegation, uncontrolled concurrency, and extra token use.
+
+### `job_max_runtime_seconds = 1800`
+
+Default maximum runtime, in seconds, for batch agent workers.
+
+- `1800` equals 30 minutes.
+- It mainly applies to batch workers such as `spawn_agents_on_csv`.
+- It is not a universal hard timeout for every normally spawned subagent.
+
+## 4. Validate
 
 ```bash
 cd /path/to/your-project
@@ -48,7 +100,7 @@ The first script validates files and configuration. The runtime probe checks the
 environment, but static configuration is not proof that a spawned child actually
 used GPT-5.4 mini.
 
-## 4. Start the parent
+## 5. Start the parent
 
 ```bash
 codex -m gpt-5.5
@@ -56,7 +108,7 @@ codex -m gpt-5.5
 
 Use one new parent session per stage.
 
-## 5. First prompt
+## 6. First prompt
 
 For a project with a task list:
 
@@ -99,7 +151,7 @@ verification commands, risks, and acceptance criteria.
 Then delegate only bounded tasks to mini subagents.
 ```
 
-## 6. What happens automatically?
+## 7. What happens automatically?
 
 The parent should:
 
@@ -114,7 +166,7 @@ The parent should:
 9. review the real diff;
 10. accept or reject the stage.
 
-## 7. What requires user input?
+## 8. What requires user input?
 
 User input is normally needed only for:
 
@@ -124,7 +176,7 @@ User input is normally needed only for:
 - unresolved acceptance failures;
 - unavailable or unverifiable subagent runtime.
 
-## 8. Confirm that subagents actually ran
+## 9. Confirm that subagents actually ran
 
 Check that Codex displays:
 
@@ -134,44 +186,30 @@ Check that Codex displays:
 - bounded file changes for Executor;
 - GPT-5.5 review of the actual diff and test results.
 
-A plan that merely recommends mini agents is not evidence that they were spawned.
-
 # Part B: Operating model
 
-## 9. Minimum viable agents
-
-Default:
+## 10. Minimum viable agents
 
 ```text
 Known local task: 0 Explorer + 1 Executor
 Unknown cross-module task: 1–3 Explorers, then 1 Executor by default
 ```
 
-A small task may use no subagent at all and be completed directly by the GPT-5.5 parent.
+A small task may use no subagent and be completed directly by the GPT-5.5 parent.
 
-## 10. Explorer
+## 11. Explorer
 
-Use Explorer for:
-
-- unknown call chains;
-- repository-wide legacy reference searches;
-- duplicate APIs, schemas, or sources of truth;
-- read-only deletion checks.
+Use Explorer for unknown call chains, repository-wide legacy searches, duplicate
+APIs or schemas, and read-only deletion checks.
 
 Do not use Explorer for a known local edit.
 
-## 11. Executor
+## 12. Executor
 
-Spawn Executor only when:
+Spawn Executor only when the objective, contracts, path scope, dependencies,
+verification commands, and escalation conditions are explicit.
 
-- the task has one objective;
-- contracts are frozen;
-- allowed and forbidden paths are explicit;
-- dependencies are complete;
-- verification commands are known;
-- escalation conditions are defined.
-
-## 12. Parallel safety
+## 13. Parallel safety
 
 Parallelize only when tasks do not modify the same files or public contracts.
 
@@ -185,23 +223,15 @@ domain model
 → integration tests
 ```
 
-## 13. Synchronization
+## 14. Synchronization
 
-Agents synchronize through:
-
-- explicit parent-to-child task cards;
-- the shared working tree;
-- durable contracts and handoffs;
-- structured child results;
-- parent review of `git status`, `git diff`, and test output.
-
-Children do not automatically inherit all parent context.
+Agents synchronize through explicit task cards, the shared working tree,
+durable contracts and handoffs, structured child results, and parent review of
+`git status`, `git diff`, and test output.
 
 # Part C: Reliability
 
-## 14. Runtime probe
-
-Run after installation or a Codex upgrade:
+## 15. Runtime probe
 
 ```bash
 bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
@@ -209,7 +239,7 @@ bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
 
 It checks environment readiness, not actual model execution.
 
-## 15. Three-round fix limit
+## 16. Three-round fix limit
 
 ```text
 Round 1: implementation
@@ -219,15 +249,13 @@ Round 3: final bounded correction
 
 After round three, stop and escalate.
 
-## 16. Per-round artifacts
+## 17. Per-round artifacts
 
 ```bash
 bash .agents/skills/refactor-orchestrator/scripts/capture-round-artifacts.sh TASK_ID ROUND
 ```
 
-Preserve diff, tests, status, result, and review evidence.
-
-## 17. Single-controller fallback
+## 18. Single-controller fallback
 
 If native subagents or their actual models cannot be verified:
 
@@ -236,27 +264,26 @@ If native subagents or their actual models cannot be verified:
 - provide manual GPT-5.4 mini session commands;
 - never claim that mini subagents ran without evidence.
 
-## 18. Review
+## 19. Review
 
-For a large or high-risk stage, start a fresh GPT-5.5 review session and provide:
-
-- requirement;
-- stage plan and contracts;
-- task cards and handoffs;
-- diff range;
-- verification evidence.
+For a large or high-risk stage, start a fresh GPT-5.5 review session and provide
+the requirement, stage plan, contracts, task cards, handoffs, diff range, and
+verification evidence.
 
 # Part D: Troubleshooting
 
+## Existing `.codex/config.toml`
+
+Run the installer normally. It creates a backup, preserves existing values, and
+adds only missing agent settings. Manual editing is usually unnecessary.
+
 ## Skill not discovered
 
-Confirm this path exists in the target repository:
+Confirm this path exists:
 
 ```text
 .agents/skills/refactor-orchestrator/SKILL.md
 ```
-
-Then run the validation script.
 
 ## No subagent was spawned
 
@@ -273,8 +300,8 @@ Use single-controller fallback.
 
 ## Explorer wrote files
 
-The parent session may have applied a runtime permission override. Avoid unrestricted
-full-access/yolo mode for strict read-only investigation.
+The parent session may have applied a runtime permission override. Avoid
+unrestricted full-access/yolo mode for strict read-only investigation.
 
 ## Token control
 
