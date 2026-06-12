@@ -41,6 +41,132 @@ job_max_runtime_seconds = 1800
 
 `max_threads` is a ceiling, not a target agent count.
 
+## Current model configuration
+
+| Role | Current model | Reasoning | Configuration |
+|---|---|---|---|
+| Parent | `gpt-5.5` | selected by launch/session/config | `-m/--model`, `/model`, or Codex `config.toml` |
+| Explorer mini | `gpt-5.4-mini` | `medium` | `.codex/agents/refactor-explorer-mini.toml` |
+| Executor mini | `gpt-5.4-mini` | `medium` | `.codex/agents/refactor-executor-mini.toml` |
+
+Both child agent files currently contain:
+
+```toml
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+```
+
+Explorer also uses:
+
+```toml
+sandbox_mode = "read-only"
+```
+
+Executor also uses:
+
+```toml
+sandbox_mode = "workspace-write"
+```
+
+### Change the Parent model for one new session
+
+```bash
+codex -m gpt-5.5
+# equivalent
+codex --model gpt-5.5
+```
+
+For example:
+
+```bash
+codex -m gpt-5.4
+```
+
+This only affects that launch.
+
+### Change the Parent model in the active session
+
+Use:
+
+```text
+/model
+```
+
+Choose from the models available to the current Codex version, account, and
+authentication method. This does not automatically edit a config file.
+
+### Change the default Parent model
+
+Edit the user-level config:
+
+```text
+~/.codex/config.toml
+```
+
+A trusted repository may also provide:
+
+```text
+<project-root>/.codex/config.toml
+```
+
+Set:
+
+```toml
+model = "gpt-5.5"
+```
+
+A launch-time `-m/--model` value overrides the configured default.
+
+### Change Explorer or Executor models
+
+Edit the installed project copies:
+
+```text
+.codex/agents/refactor-explorer-mini.toml
+.codex/agents/refactor-executor-mini.toml
+```
+
+Example: run Executor on `gpt-5.4` with higher reasoning effort:
+
+```toml
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+```
+
+Example: keep the mini model but lower reasoning effort:
+
+```toml
+model = "gpt-5.4-mini"
+model_reasoning_effort = "low"
+```
+
+Available model/reasoning combinations depend on the current Codex release,
+plan, and authentication method.
+
+Do not remove the child `model` setting casually. A custom agent without an
+explicit model may inherit the Parent model, increasing cost and changing the
+intended Parent/mini split.
+
+After changing models:
+
+1. save the TOML files;
+2. start a new Codex session;
+3. rerun:
+
+```bash
+bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+```
+
+Static TOML and the runtime probe show expected configuration only. They do not
+prove the model actually used by a specific spawned child. Report unverified
+runtime metadata as `not independently verified`.
+
+Changes made in the `codex-refactor-orchestrator` source repository do not
+automatically update copies already installed in other projects. Re-run the
+installer or manually synchronize the Skill and `.codex/agents/*.toml` files.
+Back up project-specific child configuration before reinstalling.
+
 ## Validate and start
 
 ```bash
