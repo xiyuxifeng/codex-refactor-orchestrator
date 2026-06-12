@@ -1,35 +1,24 @@
 # Codex Refactor Orchestrator — Usage Guide
 
-This guide is written for first-time users of Codex Skills and subagents.
-
-# Part A: Quick start
-
-## 1. How it works
+A repository-scoped Codex Skill for staged, evidence-based, cost-aware refactors.
 
 ```text
-GPT-5.5 parent
-├── optional refactor-explorer-mini
-├── refactor-executor-mini
-└── GPT-5.5 review and stage acceptance
+Parent agent
+├── optional Explorer mini
+├── optional Executor mini
+└── Parent semantic review and acceptance
 ```
 
-- GPT-5.5 owns planning, architecture, contracts, review, and acceptance.
-- Explorer mini performs bounded read-only repository investigation.
-- Executor mini implements approved tasks, adds tests, and runs verification.
+The goal is not to maximize subagent usage. Delegation is conditional and must
+provide more value than its coordination and context-transfer cost.
 
-## 2. Install
+## Install
 
 ```bash
 bash install.sh /path/to/your-project
 ```
 
-Using `bash install.sh` does not depend on the executable bit of `install.sh` and avoids errors such as:
-
-```text
-zsh: permission denied: ./install.sh
-```
-
-The target repository receives:
+Use the target Git repository root. The installer adds:
 
 ```text
 .agents/skills/refactor-orchestrator/
@@ -38,26 +27,10 @@ The target repository receives:
 .codex/config.toml
 ```
 
-### When `.codex/config.toml` already exists
+Existing `.codex/config.toml` values are preserved. Missing `[agents]` fields are
+added after a timestamped backup.
 
-The installer performs a non-destructive merge:
-
-1. creates a timestamped backup;
-2. preserves existing settings and values;
-3. adds only a missing `[agents]` section or missing keys;
-4. prints which settings were added and which values were preserved.
-
-Example backup:
-
-```text
-.codex/config.toml.backup-20260611-153000
-```
-
-Manual editing is normally unnecessary. It is required only when Python 3 is
-unavailable, the existing TOML is malformed, the merge fails, or you want to
-change the defaults.
-
-## 3. Agent configuration
+Default settings:
 
 ```toml
 [agents]
@@ -66,254 +39,193 @@ max_depth = 1
 job_max_runtime_seconds = 1800
 ```
 
-### `max_threads = 4`
+`max_threads` is a ceiling, not a target agent count.
 
-Maximum number of agent threads that may run concurrently under one parent
-session, including subagents.
-
-- This is an upper bound, not a request to always run four agents.
-- The Skill still uses the minimum viable number of agents.
-- Higher values increase parallel capacity but may also increase conflicts and
-  token use.
-- Existing user values are preserved by the installer.
-
-### `max_depth = 1`
-
-Maximum delegation nesting depth.
-
-- `1` allows the GPT-5.5 parent to create direct subagents.
-- Mini subagents cannot create child agents of their own.
-- This avoids recursive delegation, uncontrolled concurrency, and extra token use.
-
-### `job_max_runtime_seconds = 1800`
-
-Default maximum runtime, in seconds, for batch agent workers.
-
-- `1800` equals 30 minutes.
-- It mainly applies to batch workers such as `spawn_agents_on_csv`.
-- It is not a universal hard timeout for every normally spawned subagent.
-
-## 4. Validate
+## Validate and start
 
 ```bash
 cd /path/to/your-project
-
 bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
 bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
-```
-
-The first script validates files and configuration. The runtime probe checks the
-environment, but static configuration is not proof that a spawned child actually
-used GPT-5.4 mini.
-
-## 5. Start the parent
-
-```bash
 codex -m gpt-5.5
 ```
 
-Use one new parent session per stage.
+The runtime probe validates expected readiness. It does not by itself prove the
+actual child model or effective runtime permissions.
 
-## 6. First prompt
-
-For a project with a task list:
-
-```text
-Use the refactor-orchestrator skill.
-
-Choose and explicitly spawn subagents according to the Skill rules.
-Do not rely on implicit delegation.
-Use the minimum viable number of agents.
-
-Plan and execute Stage 1 from:
-docs/Refactor-TaskList.md
-
-Requirements:
-1. Read repository instructions first.
-2. Inspect the current repository before planning.
-3. Freeze architecture and public contracts before delegation.
-4. Delegate only bounded implementation tasks.
-5. Execute by dependency batch.
-6. Preserve diff, test, result, and review artifacts.
-7. Review the actual git diff and verification output.
-8. Do not accept the Stage without evidence.
-```
-
-Without a task list:
+## First prompt
 
 ```text
 Use the refactor-orchestrator skill.
 
-Choose and explicitly spawn subagents according to the Skill rules.
+Explicitly decide whether delegation is justified under the Skill rules.
+If justified, explicitly spawn the selected configured subagent or subagents.
+If not justified, proceed with the Parent only and record that zero subagents
+were selected.
 Do not rely on implicit delegation.
-Use the minimum viable number of agents.
 
-Create a staged refactor plan for this request:
-<describe your request>
+Plan and execute only <Task or Stage ID> from:
+<task-list-path>
 
-Inspect the repository first.
-Define target behavior, affected files, dependencies,
-verification commands, risks, and acceptance criteria.
-Then delegate only bounded tasks to mini subagents.
+Read repository instructions and inspect current code first.
+Freeze architecture and public contracts before Executor delegation.
+Use bounded Task Cards and dependency batches.
+Review the actual worktree, git diff, and verification output.
+Do not mark completion without evidence.
 ```
 
-## 7. What happens automatically?
+## Delegation eligibility gate
 
-The parent should:
+Before Executor delegation, all must be true:
 
-1. read requirements and repository rules;
-2. inspect the current implementation;
-3. decide whether Explorer is necessary;
-4. freeze architecture and contracts;
-5. create bounded task cards;
-6. explicitly spawn configured mini agents;
-7. execute tasks by dependency batch;
-8. preserve evidence;
-9. review the real diff;
-10. accept or reject the stage.
+- objective and output are bounded;
+- allowed and forbidden paths are explicit;
+- dependencies are complete;
+- public contracts are frozen;
+- verification and escalation conditions are known.
 
-## 8. What requires user input?
+Unresolved architecture, source-of-truth, migration policy, authorization, and
+algorithm semantics remain Parent responsibilities.
 
-User input is normally needed only for:
+## Delegation benefit gate
 
-- product or architecture choices with multiple valid options;
-- migration decisions that may lose data;
-- scope expansion;
-- unresolved acceptance failures;
-- unavailable or unverifiable subagent runtime.
+Delegate only when at least one material benefit exists and exceeds coordination
+cost:
 
-## 9. Confirm that subagents actually ran
+1. isolate substantial read-heavy context;
+2. move bounded routine work to a lower-cost agent;
+3. safely parallelize non-overlapping work;
+4. materially reduce expensive rework risk.
 
-Check that Codex displays:
+Otherwise, the Parent executes directly and records zero subagents.
 
-- `refactor-explorer-mini` or `refactor-executor-mini`;
-- GPT-5.4 mini as the child model;
-- read-only effective permissions for Explorer;
-- bounded file changes for Executor;
-- GPT-5.5 review of the actual diff and test results.
+## Risk and execution intensity
 
-# Part B: Operating model
+| Risk | Default intensity | Typical flow |
+|---|---|---|
+| M1 | lean | Parent direct or one Executor |
+| M2 | standard | Parent contract, one Executor by default, Parent review |
+| M3 | assurance | Parent-led, mini only for tightly bounded support |
 
-## 10. Minimum viable agents
+The Parent may override the default intensity with a written reason.
+
+## Soft agent budget
 
 ```text
-Known local task: 0 Explorer + 1 Executor
-Unknown cross-module task: 1–3 Explorers, then 1 Executor by default
+Normal task:             0–1 subagent
+Independent write work:  up to 2 Executors
+Large read-only audit:   up to 3 Explorers
 ```
 
-A small task may use no subagent and be completed directly by the GPT-5.5 parent.
+Exceeding this default budget requires explicit Parent justification.
 
-## 11. Explorer
+## Context budget
 
-Use Explorer for unknown call chains, repository-wide legacy searches, duplicate
-APIs or schemas, and read-only deletion checks.
+The Parent reads global repository instructions, TaskLists, architecture, and
+migration documents.
 
-Do not use Explorer for a known local edit.
+A child reads only:
 
-## 12. Executor
+- its Task Card;
+- applicable root and nested `AGENTS.md` files;
+- explicitly scoped implementation files;
+- directly affected tests;
+- frozen contract references and upstream handoffs.
 
-Spawn Executor only when the objective, contracts, path scope, dependencies,
-verification commands, and escalation conditions are explicit.
+Do not require every child to reread the full repository TaskList and all global
+design documents. The Task Card controls scope; current code and tests remain
+implementation facts. Contradictions must be escalated.
 
-## 13. Parallel safety
+## Task Card requirements
 
-Parallelize only when tasks do not modify the same files or public contracts.
+Each delegated card includes:
 
-Run dependent work serially:
+- task ID, risk, and one objective;
+- dependencies and baseline;
+- applicable instructions and required reading;
+- frozen contracts;
+- allowed and forbidden paths;
+- implementation requirements;
+- test, lint, build, and migration commands;
+- acceptance and escalation conditions;
+- structured handoff requirements.
+
+Never delegate with only `implement this stage`.
+
+## Parallel safety
+
+Parallel execution requires non-overlapping paths and contracts, no dependency
+on another task's uncommitted output, known integration order, and rollback.
+
+Serialize:
 
 ```text
 domain model
 → migration
-→ API schema
+→ API/schema
 → generated/frontend types
 → integration tests
 ```
 
-## 14. Synchronization
+Also serialize shared routes/state, shared tables, schema generation, deletion,
+and compatibility retirement.
 
-Agents synchronize through explicit task cards, the shared working tree,
-durable contracts and handoffs, structured child results, and parent review of
-`git status`, `git diff`, and test output.
+## Runtime truth
 
-# Part C: Reliability
+Evidence is mandatory for commands, tests, diffs, migrations, acceptance, and
+completion claims.
 
-## 15. Runtime probe
+Exact model identity, effective permissions, and spawning details are reported
+only when verifiable. Otherwise omit them or mark them as not independently
+verified.
 
-```bash
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
-```
+Use single-controller fallback only when native spawning is unavailable, child
+creation fails, or a required permission boundary cannot be guaranteed. Failure
+to verify an exact child model name alone does not require fallback if the child
+actually ran.
 
-It checks environment readiness, not actual model execution.
+If strict read-only permission cannot be trusted, do not spawn that Explorer.
+Perform the investigation in the Parent or use an approved alternative.
 
-## 16. Three-round fix limit
+## Parent review
+
+The Parent reviews the actual worktree and combined diff, behavior, cross-layer
+contracts, migrations and rollback, source-of-truth uniqueness, traceability,
+partial/error states, test quality, retirement conditions, unrelated changes,
+and scope drift.
+
+A child `completed` result is not acceptance evidence.
+
+## Three-round limit
 
 ```text
-Round 1: implementation
+Round 1: initial implementation
 Round 2: targeted correction
 Round 3: final bounded correction
 ```
 
-After round three, stop and escalate.
+After round three, stop, preserve evidence, mark blocked, and return control to
+the Parent or user. Do not broaden scope to force completion.
 
-## 17. Per-round artifacts
-
-```bash
-bash .agents/skills/refactor-orchestrator/scripts/capture-round-artifacts.sh TASK_ID ROUND
-```
-
-## 18. Single-controller fallback
-
-If native subagents or their actual models cannot be verified:
-
-- keep GPT-5.5 as the controller;
-- generate the same plans and task cards;
-- provide manual GPT-5.4 mini session commands;
-- never claim that mini subagents ran without evidence.
-
-## 19. Review
-
-For a large or high-risk stage, start a fresh GPT-5.5 review session and provide
-the requirement, stage plan, contracts, task cards, handoffs, diff range, and
-verification evidence.
-
-# Part D: Troubleshooting
-
-## Existing `.codex/config.toml`
-
-Run the installer normally. It creates a backup, preserves existing values, and
-adds only missing agent settings. Manual editing is usually unnecessary.
-
-## Skill not discovered
-
-Confirm this path exists:
+## Temporary state
 
 ```text
-.agents/skills/refactor-orchestrator/SKILL.md
+.codex/refactor-state/<stage-id>/
+├── stage-plan.md
+├── manifest.yaml
+├── contracts/
+├── tasks/
+├── handoffs/
+├── reviews/
+└── artifacts/
 ```
 
-## No subagent was spawned
+## Token-control checklist
 
-A small task may require zero subagents. For a delegable task, include:
-
-```text
-Choose and explicitly spawn subagents according to the Skill rules.
-Do not rely on implicit delegation.
-```
-
-## Child model cannot be verified
-
-Use single-controller fallback.
-
-## Explorer wrote files
-
-The parent session may have applied a runtime permission override. Avoid
-unrestricted full-access/yolo mode for strict read-only investigation.
-
-## Token control
-
-- avoid Explorer for known files;
-- start with one Executor;
-- send only task-specific context;
-- do not repeat repository-wide searches;
-- limit one task to three rounds;
-- use one GPT-5.5 session per stage.
+- Parent handles small known tasks directly.
+- Prefer read-heavy and mechanical delegation.
+- Start with zero or one child.
+- Do not repeat global-document reads in each child.
+- Combine implementation, tests, and mechanical self-review in one Executor.
+- Use one Parent session per bounded stage or tightly related task group.
+- Keep the Parent as final reviewer.
