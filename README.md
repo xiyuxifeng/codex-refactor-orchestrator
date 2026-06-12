@@ -109,7 +109,73 @@ job_max_runtime_seconds = 1800
 
 `max_threads` 是并发上限，不是要求启动 4 个 Agent。
 
-## 2. 验证
+## 2. 当前模型配置
+
+默认组合：
+
+| 角色 | 当前模型 | 配置位置 |
+| --- | --- | --- |
+| Parent | `gpt-5.5` | 启动参数、`/model` 或 Codex `config.toml` |
+| Explorer mini | `gpt-5.4-mini` | `.codex/agents/refactor-explorer-mini.toml` |
+| Executor mini | `gpt-5.4-mini` | `.codex/agents/refactor-executor-mini.toml` |
+
+两个 mini Agent 默认都使用：
+
+```toml
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+```
+
+### 修改 Parent 模型
+
+仅修改本次新 Session：
+
+```bash
+codex -m gpt-5.5
+# 或
+codex --model gpt-5.4
+```
+
+在当前 Codex Session 中切换：
+
+```text
+/model
+```
+
+修改默认模型，可编辑用户级 `~/.codex/config.toml`，或受信任项目中的 `.codex/config.toml`：
+
+```toml
+model = "gpt-5.5"
+```
+
+### 修改 mini 模型
+
+编辑目标项目中的：
+
+```text
+.codex/agents/refactor-explorer-mini.toml
+.codex/agents/refactor-executor-mini.toml
+```
+
+例如把 Executor 改为 `gpt-5.4`：
+
+```toml
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+```
+
+不要随意删除 mini TOML 中的 `model`。省略后，custom agent 可能继承 Parent 模型，从而提高成本并改变原有职责分工。
+
+修改模型后建议新建 Codex Session，并再次运行：
+
+```bash
+bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+```
+
+注意：静态 TOML 和 runtime probe 只能说明预期配置，不能单独证明某次 child 实际使用的模型。模型名称是否可用还取决于当前 Codex 版本、账号计划和认证方式。
+
+## 3. 验证
 
 ```bash
 cd /path/to/your-project
@@ -119,7 +185,7 @@ bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
 
 `runtime-probe.sh` 只检查预期运行条件，不能单独证明实际子 Agent 模型或有效权限。
 
-## 3. 启动 Parent
+## 4. 启动 Parent
 
 ```bash
 codex -m gpt-5.5
@@ -127,7 +193,7 @@ codex -m gpt-5.5
 
 建议一个 Stage 或一个紧密关联的 Task 组使用一个新 Parent Session。
 
-## 4. 第一个 Prompt
+## 5. 第一个 Prompt
 
 已有 TaskList：
 
