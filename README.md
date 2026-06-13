@@ -261,7 +261,8 @@ Agent 软预算：
 - 优先委派只读调查、测试分析和机械实现；
 - 一个 Executor 同时完成实现、局部测试和机械自查；
 - 不并行修改同一文件、Schema、API、路由或公共契约；
-- Parent 永远负责最终 Review。
+- Parent 永远负责最终 Review；
+- Token消耗在使用子Agent时，不能保证比单独使用Parent更少。
 
 # Runtime Truth
 
