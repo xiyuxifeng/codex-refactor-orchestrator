@@ -9,10 +9,24 @@ if [[ ! -d "$target" ]]; then
   exit 1
 fi
 
-mkdir -p "$target/.agents" "$target/.codex"
+source_skill="$package_root/.agents/skills/refactor-orchestrator"
+if [[ ! -d "$source_skill" ]]; then
+  echo "Source skill directory does not exist: $source_skill" >&2
+  exit 1
+fi
 
-cp -R "$package_root/.agents/." "$target/.agents/"
+mkdir -p "$target/.codex/skills" "$target/.codex"
+
+rm -rf "$target/.codex/skills/refactor-orchestrator"
+cp -R "$source_skill" "$target/.codex/skills/refactor-orchestrator"
 cp -R "$package_root/.codex/agents" "$target/.codex/"
+
+legacy_skill="$target/.agents/skills/refactor-orchestrator"
+if [[ -d "$legacy_skill" ]]; then
+  echo "WARNING: legacy skill path still exists: $legacy_skill"
+  echo "Remove it after confirming the new .codex/skills installation works:"
+  echo "  rm -rf .agents/skills/refactor-orchestrator"
+fi
 
 source_config="$package_root/.codex/config.toml"
 target_config="$target/.codex/config.toml"
@@ -101,9 +115,9 @@ PY
 fi
 
 echo "Installed:"
-echo "  $target/.agents/skills/refactor-orchestrator"
+echo "  $target/.codex/skills/refactor-orchestrator"
 echo "  $target/.codex/agents"
 echo "  $target/.codex/config.toml"
 echo
 echo "Validate from repository root with:"
-echo "  bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh"
+echo "  bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh"
