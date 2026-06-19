@@ -22,19 +22,30 @@ GPT-5.5 parent
 
 ## Installation
 
-Copy `.agents/` and `.codex/` to the repository root, or run:
+Install the Skill under `.codex/skills/refactor-orchestrator` and custom agents under `.codex/agents` by running:
 
 ```bash
 bash install.sh /path/to/repository
 ```
 
+The installer creates or updates these paths:
+
+```text
+.codex/skills/refactor-orchestrator/
+.codex/agents/refactor-explorer-mini.toml
+.codex/agents/refactor-executor-mini.toml
+.codex/config.toml
+```
+
 When the target repository already has `.codex/config.toml`, the installer creates a backup, preserves existing values, and adds only missing `[agents]` settings.
+
+If the target still contains the legacy `.agents/skills/refactor-orchestrator` path, remove it after confirming the `.codex/skills` copy works to avoid stale duplicate Skill copies.
 
 Validate:
 
 ```bash
-bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 Start the parent:
