@@ -21,7 +21,7 @@ bash install.sh /path/to/your-project
 Use the target Git repository root. The installer adds:
 
 ```text
-.agents/skills/refactor-orchestrator/
+.codex/skills/refactor-orchestrator/
 .codex/agents/refactor-explorer-mini.toml
 .codex/agents/refactor-executor-mini.toml
 .codex/config.toml
@@ -29,6 +29,10 @@ Use the target Git repository root. The installer adds:
 
 Existing `.codex/config.toml` values are preserved. Missing `[agents]` fields are
 added after a timestamped backup.
+
+If the target repository still contains the legacy `.agents/skills/refactor-orchestrator`
+path, remove that old copy after confirming the `.codex/skills/refactor-orchestrator`
+copy works. Keeping both can make Codex or humans read a stale Skill version.
 
 Default settings:
 
@@ -154,8 +158,8 @@ After changing models:
 3. rerun:
 
 ```bash
-bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 Static TOML and the runtime probe show expected configuration only. They do not
@@ -171,8 +175,8 @@ Back up project-specific child configuration before reinstalling.
 
 ```bash
 cd /path/to/your-project
-bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 codex -m gpt-5.5
 ```
 
@@ -218,140 +222,15 @@ algorithm semantics remain Parent responsibilities.
 Delegate only when at least one material benefit exists and exceeds coordination
 cost:
 
-1. isolate substantial read-heavy context;
-2. move bounded routine work to a lower-cost agent;
-3. safely parallelize non-overlapping work;
-4. materially reduce expensive rework risk.
+- isolate substantial read-heavy context;
+- assign bounded routine work to a lower-cost agent;
+- run independent non-overlapping work safely in parallel;
+- reduce high-cost rework risk.
 
-Otherwise, the Parent executes directly and records zero subagents.
+Zero subagents is always valid when delegation is not justified.
 
-## Risk and execution intensity
+## Acceptance rule
 
-| Risk | Default intensity | Typical flow |
-|---|---|---|
-| M1 | lean | Parent direct or one Executor |
-| M2 | standard | Parent contract, one Executor by default, Parent review |
-| M3 | assurance | Parent-led, mini only for tightly bounded support |
-
-The Parent may override the default intensity with a written reason.
-
-## Soft agent budget
-
-```text
-Normal task:             0–1 subagent
-Independent write work:  up to 2 Executors
-Large read-only audit:   up to 3 Explorers
-```
-
-Exceeding this default budget requires explicit Parent justification.
-
-## Context budget
-
-The Parent reads global repository instructions, TaskLists, architecture, and
-migration documents.
-
-A child reads only:
-
-- its Task Card;
-- applicable root and nested `AGENTS.md` files;
-- explicitly scoped implementation files;
-- directly affected tests;
-- frozen contract references and upstream handoffs.
-
-Do not require every child to reread the full repository TaskList and all global
-design documents. The Task Card controls scope; current code and tests remain
-implementation facts. Contradictions must be escalated.
-
-## Task Card requirements
-
-Each delegated card includes:
-
-- task ID, risk, and one objective;
-- dependencies and baseline;
-- applicable instructions and required reading;
-- frozen contracts;
-- allowed and forbidden paths;
-- implementation requirements;
-- test, lint, build, and migration commands;
-- acceptance and escalation conditions;
-- structured handoff requirements.
-
-Never delegate with only `implement this stage`.
-
-## Parallel safety
-
-Parallel execution requires non-overlapping paths and contracts, no dependency
-on another task's uncommitted output, known integration order, and rollback.
-
-Serialize:
-
-```text
-domain model
-→ migration
-→ API/schema
-→ generated/frontend types
-→ integration tests
-```
-
-Also serialize shared routes/state, shared tables, schema generation, deletion,
-and compatibility retirement.
-
-## Runtime truth
-
-Evidence is mandatory for commands, tests, diffs, migrations, acceptance, and
-completion claims.
-
-Exact model identity, effective permissions, and spawning details are reported
-only when verifiable. Otherwise omit them or mark them as not independently
-verified.
-
-Use single-controller fallback only when native spawning is unavailable, child
-creation fails, or a required permission boundary cannot be guaranteed. Failure
-to verify an exact child model name alone does not require fallback if the child
-actually ran.
-
-If strict read-only permission cannot be trusted, do not spawn that Explorer.
-Perform the investigation in the Parent or use an approved alternative.
-
-## Parent review
-
-The Parent reviews the actual worktree and combined diff, behavior, cross-layer
-contracts, migrations and rollback, source-of-truth uniqueness, traceability,
-partial/error states, test quality, retirement conditions, unrelated changes,
-and scope drift.
-
-A child `completed` result is not acceptance evidence.
-
-## Three-round limit
-
-```text
-Round 1: initial implementation
-Round 2: targeted correction
-Round 3: final bounded correction
-```
-
-After round three, stop, preserve evidence, mark blocked, and return control to
-the Parent or user. Do not broaden scope to force completion.
-
-## Temporary state
-
-```text
-.codex/refactor-state/<stage-id>/
-├── stage-plan.md
-├── manifest.yaml
-├── contracts/
-├── tasks/
-├── handoffs/
-├── reviews/
-└── artifacts/
-```
-
-## Token-control checklist
-
-- Parent handles small known tasks directly.
-- Prefer read-heavy and mechanical delegation.
-- Start with zero or one child.
-- Do not repeat global-document reads in each child.
-- Combine implementation, tests, and mechanical self-review in one Executor.
-- Use one Parent session per bounded stage or tightly related task group.
-- Keep the Parent as final reviewer.
+The Parent must inspect the actual worktree, diff, verification output, and
+handoff evidence before accepting a task or stage. Child completion messages are
+not acceptance evidence by themselves.
