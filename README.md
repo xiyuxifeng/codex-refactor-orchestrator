@@ -9,7 +9,13 @@ Parent
 └── Parent semantic review and acceptance
 ```
 
+## documentation
+
 - [完整中文使用说明](docs/01-通用项目使用说明.md)
+- [Installation guide](INSTALL.md)
+- [English quick guide](README_EN.md)
+- [Full English usage guide](docs/README_EN.md)
+- [Generic start prompt example](examples/generic-project/start-prompt.txt)
 
 ## 1. What this solves
 
@@ -547,9 +553,3 @@ After confirming the new path works, remove the old copy:
 rm -rf .agents/skills/refactor-orchestrator
 ```
 
-## 16. More documentation
-
-- [Installation guide](INSTALL.md)
-- [English quick guide](README_EN.md)
-- [Full English usage guide](docs/README_EN.md)
-- [Generic start prompt example](examples/generic-project/start-prompt.txt)
