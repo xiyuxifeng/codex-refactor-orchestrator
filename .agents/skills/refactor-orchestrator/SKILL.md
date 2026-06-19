@@ -90,6 +90,7 @@ Before the first delegated task in a repository, and after relevant Codex or
 configuration changes:
 
 1. verify these files exist:
+   - `.codex/skills/refactor-orchestrator/SKILL.md`
    - `.codex/agents/refactor-explorer-mini.toml`
    - `.codex/agents/refactor-executor-mini.toml`
 2. verify their declared model and default permissions
@@ -332,7 +333,7 @@ Run before the first delegated task in a repository and after Codex/agent
 configuration changes:
 
 ```bash
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 The probe checks expected readiness, not proof of actual child model or effective
