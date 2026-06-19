@@ -9,6 +9,8 @@ Parent
 └── Parent semantic review and acceptance
 ```
 
+- [完整中文使用说明](docs/01-通用项目使用说明.md)
+
 ## 1. What this solves
 
 Large refactors often suffer from:
@@ -547,7 +549,6 @@ rm -rf .agents/skills/refactor-orchestrator
 
 ## 16. More documentation
 
-- [完整中文使用说明](docs/01-通用项目使用说明.md)
 - [Installation guide](INSTALL.md)
 - [English quick guide](README_EN.md)
 - [Full English usage guide](docs/README_EN.md)
