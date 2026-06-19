@@ -9,7 +9,7 @@ Parent
 └── Parent semantic review and acceptance
 ```
 
-## documentation
+## Documentation
 
 - [完整中文使用说明](docs/01-通用项目使用说明.md)
 - [Installation guide](INSTALL.md)
