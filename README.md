@@ -91,12 +91,20 @@ bash install.sh /path/to/your-project
 安装后新增：
 
 ```text
-.agents/skills/refactor-orchestrator/
+.codex/skills/refactor-orchestrator/
 .codex/agents/refactor-explorer-mini.toml
 .codex/agents/refactor-executor-mini.toml
 ```
 
 已有 `.codex/config.toml` 时，安装器会先备份，再保留已有值，只补充缺失的 `[agents]` 配置。通常无需手工编辑。
+
+如果目标项目仍有旧路径：
+
+```text
+.agents/skills/refactor-orchestrator/
+```
+
+请在确认 `.codex/skills/refactor-orchestrator/` 可用后删除旧路径，避免 Codex 或使用者读取到过期副本。
 
 默认配置：
 
@@ -169,8 +177,8 @@ model_reasoning_effort = "high"
 修改模型后建议新建 Codex Session，并再次运行：
 
 ```bash
-bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 注意：静态 TOML 和 runtime probe 只能说明预期配置，不能单独证明某次 child 实际使用的模型。模型名称是否可用还取决于当前 Codex 版本、账号计划和认证方式。
@@ -179,8 +187,8 @@ bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
 
 ```bash
 cd /path/to/your-project
-bash .agents/skills/refactor-orchestrator/scripts/validate-install.sh
-bash .agents/skills/refactor-orchestrator/scripts/runtime-probe.sh
+bash .codex/skills/refactor-orchestrator/scripts/validate-install.sh
+bash .codex/skills/refactor-orchestrator/scripts/runtime-probe.sh
 ```
 
 `runtime-probe.sh` 只检查预期运行条件，不能单独证明实际子 Agent 模型或有效权限。
@@ -217,81 +225,3 @@ Do not mark the Stage complete without evidence.
 ```
 
 没有 TaskList：
-
-```text
-Use the refactor-orchestrator skill.
-
-Explicitly decide whether delegation is justified under the Skill rules.
-If justified, explicitly spawn the selected configured subagent or subagents.
-If not justified, proceed with the Parent only and record that zero subagents
-were selected.
-Do not rely on implicit delegation.
-
-Create a staged plan for:
-<describe your request>
-
-Inspect repository instructions and current code first.
-Define target behavior, contracts, dependencies, verification, risks, and
-acceptance. Delegate only bounded tasks that pass the Skill gates.
-```
-
-# 风险与执行强度
-
-| 风险 | 默认强度 | 典型执行 |
-|---|---|---|
-| M1 | lean | Parent 直接做，或 1 个 Executor |
-| M2 | standard | Parent 冻结契约，默认 1 个 Executor |
-| M3 | assurance | Parent 主导，mini 只做限定支持 |
-
-Agent 软预算：
-
-```text
-普通任务：0–1 个 subagent
-独立写入任务：最多 2 个 Executor
-大型只读审计：最多 3 个 Explorer
-```
-
-超出默认预算必须由 Parent 明确说明理由。
-
-# Context 与额度控制
-
-- Parent 读取全局规则和架构文档；
-- 子 Agent 只读取 Task Card、适用 `AGENTS.md`、相关代码、测试和冻结契约；
-- 不让每个子 Agent 重读完整 TaskList 和全部全局设计文档；
-- 优先委派只读调查、测试分析和机械实现；
-- 一个 Executor 同时完成实现、局部测试和机械自查；
-- 不并行修改同一文件、Schema、API、路由或公共契约；
-- Parent 永远负责最终 Review；
-- 使用子Agent不能保证Token消耗比单独使用Parent更少。
-
-# Runtime Truth
-
-必须有证据才能声称：
-
-- 测试或命令已运行并通过；
-- diff、迁移或验收已完成；
-- Task 或 Stage 已完成。
-
-模型、有效权限和 spawning 细节只有可验证时才报告；否则省略或标记为未独立验证。
-
-只有 native spawning 不可用、child 创建失败，或任务依赖的权限边界无法保证时，才进入 single-controller fallback。仅仅无法确认确切 child model，不需要自动 fallback。
-
-# 核心规则
-
-- 委派是条件性的，不是自动的；
-- 0 个 subagent 合法；
-- Explorer 优先用于 read-heavy 工作；
-- Executor 必须有冻结契约和精确 Task Card；
-- 默认使用最少 Agent 数量；
-- 同一 Task 最多三轮修复；
-- 子 Agent 完成声明不等于验收通过；
-- 最终验收检查真实 diff、测试、迁移和用户流程。
-
-# 详细文档
-
-- [中文完整使用说明](docs/01-通用项目使用说明.md)
-- [English usage guide](docs/README_EN.md)
-
-## License
-
-MIT
