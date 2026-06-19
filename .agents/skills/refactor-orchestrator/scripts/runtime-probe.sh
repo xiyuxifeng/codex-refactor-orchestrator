@@ -22,7 +22,7 @@ else
 fi
 
 required=(
-  ".agents/skills/refactor-orchestrator/SKILL.md"
+  ".codex/skills/refactor-orchestrator/SKILL.md"
   ".codex/agents/refactor-explorer-mini.toml"
   ".codex/agents/refactor-executor-mini.toml"
 )
@@ -37,6 +37,14 @@ for path in "${required[@]}"; do
 done
 
 echo
+if [[ -d ".agents/skills/refactor-orchestrator" ]]; then
+  echo "Legacy path still exists: .agents/skills/refactor-orchestrator"
+  echo "Use .codex/skills/refactor-orchestrator as the canonical installed skill path."
+  status=1
+fi
+
+echo
+
 echo "Manual runtime confirmations still required:"
 echo "- Active parent model is GPT-5.5"
 echo "- Project-level configuration is trusted and loaded"
